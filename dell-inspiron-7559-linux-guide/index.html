@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en-US">
+        <head>
+                <link href="https://fonts.googleapis.com/css?family=Droid+Sans|Droid+Sans+Mono" rel="stylesheet">
+                <title>Dell Inspiron 7559 Ubuntu Linux Guide</title>
+
+                <style>
+                        body {
+                                background: #feffed;
+                                font-family: 'Droid Sans', sans-serif;
+                        }
+
+                        code {
+                                background: #000000;
+                                color: #ffffff;
+                                font-family: 'Droid Sans Mono', monospace;
+                                display: block;
+                                margin: 5px;
+                                font-size: 105%;
+                        }
+
+                        #main-content {
+                                width: 55%;
+                                margin-left: auto;
+                                margin-right: auto;
+                                font-size: 110%;
+                        }
+
+                        .in-mono {
+                                display: inline;
+                                font-family: 'Droid Sans Mono', monospace;
+                                font-weight: bold;
+                        }
+
+                        .note {
+                                display: block;
+                                padding: 10px;
+                        }
+
+                        .note-warn {
+                                background: #ffbaba;
+                                border: 1px solid #ffa0a0;
+                        }
+
+                        .note-info {
+                                background: #ceffc4;
+                                border: 1px solid #acff9b;
+                        }
+
+                </style>
+        </head>
+
+        <body>
+                <div id="main-content">
+                        <h1><a name="top-title">Dell Inspiron 7559 Ubuntu Linux Guide</a></h1>
+                        <p>Last updated <b>30 Oct 2016</b></p>
+                        <p>This guide will show you how to install and configure an <strong>Ubuntu Linux 16.04 LTS</strong> distribution (Ubuntu, Lubuntu, Xubuntu, Kubuntu, Ubuntu Gnome, Ubuntu MATE) on the Dell Inspiron 7559 laptop.</p>
+                        <p class="note note-warn"><strong>DISCLAIMER</strong> This document just details the processes that I discovered through hours of trial and error to get a stable Ubuntu distribution working on my laptop. <em>I'm not liable for any damage or adverse effects that this has on your system.</em> Always back up your important data before doing any major work to your computer.</p>
+
+                        <h2><a name="toc-top">Table of Contents</a></h2>
+                        <ol>
+                                <li><a href="#toc-reading">Reading this Guide</a></li>
+                                <li><a href="#toc-prerequisites">Pre-requisites</a></li>
+                                <li><a href="#toc-installation">Installation</a></li>
+                                <li><a href="#toc-initialsetup">Initial Setup</a></li>
+                                <li><a href="#toc-nvidiadriver">Installing the Nvidia Driver</a></li>
+                                <li><a href="#toc-updatekernel">Update Linux kernel to 4.8.5.</a></li>
+                                <li><a href="#toc-bumblebee">Installing Bumblebee</a></li>
+                                <li><a href="#toc-powermanagement">Installing Power-Management Utilities</a></li>
+                                <li><a href="#toc-gpuswitching">Running Games and Applications with the Right GPU</a></li>
+                                <li><a href="#toc-inteldriver">(Optional) Installing the Intel Driver and Firmware</a></li>
+                                <li><a href="#toc-issues">Known Issues</a></li>
+                        </ol>
+
+                        <h2><a name="toc-reading">Reading this Guide</a></h2>
+                        <p>While it might seem straightforward, I just want to make sure this document's structure is absolutely clear.</p>
+                        <p class="note note-info">Text within green boxes usually contains clarifying information and could be helpful if you're curious as to why something is the way it is.</p>
+                        <p class="note note-warn">Text within a red box like this should never be ignored as it usually contains warning information.</p>
+                        <p>Text in a black box like this usually represents something typed into a terminal or a text file!</p>
+                        <code>sudo apt update</code>
+                        <p><span class="in-mono">Text like this usually represents something you need to select, click, or a program name to use. Something that you interact with or may see in a text file or interface.</span></p>
+
+                        <h2><a name="toc-prerequisites">Pre-requisites</a></h2>
+                        <ul>
+                                <li>Some experience installing an Ubuntu distribution</li>
+                                <li>Installation media for said Ubuntu distribution</li>
+                                <li>A Dell Inspiron 7559 laptop (duh)</li>
+                        </ul>
+
+                        <h2><a name="toc-installation">Installation</a></h2>
+                        <ol>
+                                <li>Make sure Secure Boot is disabled from the BIOS.</li>
+                                <li>If you intend to dual boot with Windows, make sure Window's Fast Boot is disabled.</li>
+                                <p class="note note-info">I updated my BIOS to v1.1.8, but I don't think it is required for all of this to work as I had a successful setup following these procedures prior to doing so.</p>
+                                <li>Boot from your installation media.</li>
+                                <li>Highlight the <span class="in-mono">Install Ubuntu</span> entry and press <span class="in-mono">e</span> on your keyboard.</li>
+                                <li>Modify the line that contains <span class="in-mono">quiet splash</span> at the end and change it to:</li>
+                                <code>nomodeset i915_bpo.nomodeset=1 quiet splash</code>
+                                <li>Press <span class="in-mono">F10</span> to boot.</li>
+                                <li>Proceed with the installation as normal.</li>
+                                <li>Reboot.</li>
+                        </ol>
+
+                        <h2><a name="toc-initialsetup">Initial Setup</a></h2>
+                        <ol>
+                                <li>Follow <a href="#toc-installation">Installation steps 2-4</a> to boot into the operating system.</li>
+                                <li>Connect to a network.</li>
+                                <li>If you didn't do this during the install, update your system.</li>
+                                <code>
+                                        sudo apt update <br />
+                                        sudo apt upgrade
+                                </code>
+                        </ol>
+
+                        <h2><a name="toc-nvidiadriver">Installing the Nvidia Driver</a></h2>
+                        <ol>
+                                <li>Add the proprietary graphics drivers repository.</li>
+                                <code>
+                                        sudo add-apt-repository ppa:graphics-drivers/ppa <br />
+                                        sudo apt update
+                                </code>
+                                <li>Install your chosen Nvidia driver.</li>
+                                <code>sudo apt install nvidia-367</code>
+                                <p class="note note-info">As of 30 Oct 2016, <span class="in-mono">nvidia-370</span> is in beta, so I used <span class="in-mono">nvidia-367</span>.</p>
+                                <li>Open the GRUB configuration file: <span class="in-mono">/etc/default/grub</span>.</li>
+                                <code>sudo vi /etc/default/grub</code>
+                                <li>Change the line that reads <span class="in-mono">GRUB_CMDLINE_LINUX=""</span> to</li>
+                                <code>GRUB_CMDLINE_LINUX="acpi_backlight=native acpi_osi="</code>
+                                <p class="note note-warn"><strong>WARNING</strong> The system won't boot without these parameters. Since we are now using a different driver, we don't need the old <span class="in-mono">nomodeset</span> parameters anymore. I'm not sure if it's because the ACPI settings are odd/broken. At least with these we can adjust the brightness of the screen with brightness applets/settings since the function keys won't work with this driver.</p>
+                                <li>Save your changes and close the file.</li>
+                                <li>Apply the changes to GRUB. Doing this means that we no longer have to manually add kernel boot parameters to boot like we did earlier in the guide.</li>
+                                <code>sudo update-grub</code>
+                                <li>Switch to the Intel GPU to save power.</li>
+                                <code>sudo prime-select intel.</code>
+                                <li>Reboot.</li>
+                        </ol>
+
+                        <h2><a name="toc-updatekernel">Update to Linux kernel 4.8.5 for better GTX 900 & Optimus support</a></h2>
+                        <ol>
+                                <li>Make a directory to download the kernel files to, make sure it's empty then <span class="in-mono">cd</span> into it.</li>
+                                <li>Download the <a href="http://kernel.ubuntu.com/~kernel-ppa/mainline/v4.8.5/">Ubuntu mainline Linux kernel 4.8.5.</a> You need the header files for <span class="in-mono">amd64</span>, <span class="in-mono">all</span>, and the image files for <span class="in-mono">amd64</span>.</li>
+                                <code>wget http://kernel.ubuntu.com/~kernel-ppa/mainline/v4.8.5/linux-headers-4.8.5-040805-generic_4.8.5-040805.201610280434_amd64.deb http://kernel.ubuntu.com/~kernel-ppa/mainline/v4.8.5/linux-headers-4.8.5-040805_4.8.5-040805.201610280434_all.deb http://kernel.ubuntu.com/~kernel-ppa/mainline/v4.8.5/linux-image-4.8.5-040805-generic_4.8.5-040805.201610280434_amd64.deb</code>
+                                <p class="note note-info">This <span class="in-mono">wget</span> command will download the correct headers and image files for the 64bit 4.8.5 kernel into the working directory.</p>
+                                <p class="note note-warn"><strong>WARNING</strong> Be absolutely certain there are no other .deb files in the current directory before this next step.</p>
+                                <li>Install the new kernel.</li>
+                                <code>sudo dpkg -i *.deb</code>
+                                <li>Reboot.</li>
+                        </ol>
+
+                        <h2><a name="toc-bumblebee">Installing Bumblebee</a></h2>
+                        <p>Bumblebee is a program that allows "on-the-fly" GPU switching similar to what Nvidia Optimus does on Windows. Unfortunately, Nvidia doesn't exactly support this on Linux. Without Bumblebee, we can only switch GPUs and then log out/back in to change it. This results in us using the power-hungry Nvidia GPU for <em>all applications</em> rather than just the game or program we need it for. And like I said, if we want to change, we have to initiate the change and then log out and back in. Annoying!</p>
+                        <p>Bumblebee provides the convenience of switching the GPU for us just for the given application and then powers down the beefy GPU when we're not using it. Oh, and we don't have to log out then back in. Awesome, right?</p>
+                        <ol>
+                                <li>Install <span class="in-mono">bumblebee-nvidia</span>.</li>
+                                <code>sudo apt install bumblebee-nvidia</code>
+                                <li>Open Bumblebee's configuration file (<span class="in-mono">/etc/bumblebee/bumblebee.conf</span>) in your preferred text editor.</li>
+                                <code>sudo vim /etc/bumblebee/bumblebee.conf</code>
+                                <li>Edit the line in the <span class="in-mono">[bumblebeed]</span> section that looks like <span class="in-mono">Driver=</span> and change it to:</li>
+                                <code>Driver=nvidia</code>
+                                <li>Edit the line in the <span class="in-mono">[optirun]</span> section that looks like <span class="in-mono">Bridge=auto</span> and change it to:</li>
+                                <code>Bridge=primus</code>
+                                <li>Change every occurence of the word <span class="in-mono">nvidia-current</span> in this file to the Nvidia driver you selected. In my case, it's <span class="in-mono">nvidia-367</span>.</li>
+                                <p class="note note-info">If you're using <span class="in-mono">vi</span> or <span class="in-mono">vim</span>, you can just type <span class="in-mono">:%s/nvidia-current/nvidia-367/g</span> and hit enter to change all occurences of <span class="in-mono">nvidia-current</span> with <span class="in-mono">nvidia-367</span>.</p>
+                                <li>Save your changes and close the file.</li>
+                                <li>Reboot</li>
+                                <li>Verify you can use Bumblebee.</li>
+                                <code>optirun glxinfo | egrep -i 'nvidia|gtx'</code>
+                                <p>You should see some information about your discrete Nvidia GPU that's on the laptop.</p>
+                                <code>
+                                        connor@connor-Inspiron-7559:~$ optirun glxinfo | egrep -i 'nvidia|gtx'<br />
+                                        server glx vendor string: NVIDIA Corporation <br />
+                                        OpenGL vendor string: NVIDIA Corporation <br />
+                                        OpenGL renderer string: GeForce GTX 960M/PCIe/SSE2 <br />
+                                        OpenGL core profile version string: 4.5.0 NVIDIA 367.57 <br />
+                                        OpenGL core profile shading language version string: 4.50 NVIDIA <br />
+                                        OpenGL version string: 4.5.0 NVIDIA 367.57 <br />
+                                        OpenGL shading language version string: 4.50 NVIDIA <br />
+                                </code>
+                                <li><strong>OPTIONAL</strong> Download and install the <a href="https://sourceforge.net/projects/virtualgl/files/2.5.1/virtualgl_2.5.1_amd64.deb/download">VirtualGL tools</a> to benchmark your system and make sure <span class="in-mono">optirun</span> uses the correct video card. I like using <span class="in-mono">glxspheres64</span></li>
+                        </ol>
+
+                        <h2><a name="toc-powermanagement">Installing Power-Management Utilities</a></h2>
+                        <p>Battery life isn't too bad when your brightness is a bit lower. I usually install TLP to squeeze some more time out of my Linux battery life. After you install it and verify that it's running, it's pretty hands-off from there and it'll take care of itself from then on.</p> 
+                        <p>You won't have the same amount of time on battery as a Macbook does, but depending on the screen brightness, I can usually make it a full day on campus with my laptop doing web browsing, word processing, or programming. </p>
+                        <ol>
+                                <li>Install tlp and tlp-row.</li>
+                                <code>sudo apt install tlp tlp-rdw</code>
+                                <li>Make sure TLP is running in battery mode.</li>
+                                <code>sudo tlp bat</code>
+                        </ol>
+
+                        <h2><a name="toc-gpuswitching">Running games and applications with the proper GPU</a></h2>
+                        <p><strong>Running Steam games</strong></p>
+                        <ol>
+                                <li>Right click on the game in your Steam library and click Properties.</li>
+                                <li>Click Set Launch Options.</li>
+                                <li>Enter <span class="in-mono">primusrun %command</span>.</li>
+                                <p class="note note-info">If you already have launch options in this box, make sure that you put <span class="in-mono">primusrun</span> at the very beginning and put <span class="in-mono">%command</span> at the very end and everything should work fine.</p>
+                                <li>Play your game normally by launching it through the Steam client!</li>
+                        </ol>
+
+                        <p><strong>Running applications from the command line</strong></p>
+                        <p>Prefix the command with <span class="in-mono">optirun</span>. We did this earlier when we ran <span class="in-mono">glxinfo</span>.</p>
+                        <p>Example:</p>
+                        <code>optirun firefox</code>
+
+                        <p><strong>Running Wine games</strong></p>
+                        <p>Similar to running command line programs, you can just do:</p>
+                        <code>optirun wine gamenamehere</code>
+
+                        <h2><a name="toc-inteldriver">(Optional) Installing the Intel Graphics Driver and Firmware</a></h2>
+                        <p>This step is optional just because I followed it to quiet down some "warnings" given saying that some i915 firmware is missing or whatever. It only fixes one or two of the warnings but the other one remains even after installing it. I haven't investigated this too much to see if there's an actual benefit, but as far as I know, you won't harm anything by skipping this.</p>
+                        <ol>
+                                <li>Download the <a href="https://01.org/linuxgraphics/downloads/intel-graphics-installer-linux-1.4.0">Intel Graphics Driver Installer</a>.</li>
+                                <li>Install the .deb we just downloaded.</li>
+                                <code>sudo dpkg -i <insert name of deb here>.deb</code>
+                                <li>Run the Intel Graphics Installer for Linux program (you may need to open your dash/search for the application, it has a GUI).</li>
+                                <li>Reboot.</li>
+                                <li>Download the <a href="https://01.org/linuxgraphics/intel-linux-graphics-firmwares"><strong>Skylake</strong> DMC and GuC graphics firmwares</a> from Intel.</li>
+                                <li>Extract the contents of the archives.</li>
+                                <code>tar -xf name_of_downloaded_file_here</code>
+                                <p>You'll need to perform that command for both archives.</p>
+                                <li>Go into the extracted folders one at a time and install the firmwares.</li>
+                                <code>sudo bash ./install.sh --install</code>
+                                <li>Reboot</li>
+                        </ol>
+
+                        <h2><a name="toc-issues">Known Issues</a></h2>
+                        <p><strong>The Brightness Function keys don't work</strong></p>
+                        <p>I suspect this has something to do with some weird quirk of the ACPI controls after installing the Nvidia driver. The workaround is described in <a href="#toc-nvidiadriver">the Nvidia driver setup section</a> where we modify Grub's boot parameters. This does not regain use of the function keys, but it does allow for controlling the brightness via settings, brightness applet, or some other brightness controller application.</p>
+                        <hr />
+                </div> <!-- main-content -->
+        </body>
+</html>
