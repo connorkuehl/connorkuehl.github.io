@@ -131,7 +131,7 @@
                                 <li>Apply the changes to GRUB. Doing this means that we no longer have to manually add kernel boot parameters to boot like we did earlier in the guide.</li>
                                 <code>sudo update-grub</code>
                                 <li>Switch to the Intel GPU to save power.</li>
-                                <code>sudo prime-select intel.</code>
+                                <code>sudo prime-select intel</code>
                                 <li>Reboot.</li>
                         </ol>
 
@@ -151,8 +151,14 @@
                         <p>Bumblebee is a program that allows "on-the-fly" GPU switching similar to what Nvidia Optimus does on Windows. Unfortunately, Nvidia doesn't exactly support this on Linux. Without Bumblebee, we can only switch GPUs and then log out/back in to change it. This results in us using the power-hungry Nvidia GPU for <em>all applications</em> rather than just the game or program we need it for. And like I said, if we want to change, we have to initiate the change and then log out and back in. Annoying!</p>
                         <p>Bumblebee provides the convenience of switching the GPU for us just for the given application and then powers down the beefy GPU when we're not using it. Oh, and we don't have to log out then back in. Awesome, right?</p>
                         <ol>
-                                <li>Install <span class="in-mono">bumblebee-nvidia</span>.</li>
-                                <code>sudo apt install bumblebee-nvidia</code>
+                                <li>Add the Bumblebee Testing repository.</li>
+                                <code>
+                                        sudo add-apt-repository ppa:bumblebee/testing <br />
+                                        sudo apt update
+                                </code>
+                                <p class="note note-info">We use the Testing repository because the stable repository doesn't have packages for Xenial (16.04).</p>
+                                <li>Install <span class="in-mono">bumblebee</span>.</li>
+                                <code>sudo apt install bumblebee</code>
                                 <li>Open Bumblebee's configuration file (<span class="in-mono">/etc/bumblebee/bumblebee.conf</span>) in your preferred text editor.</li>
                                 <code>sudo vim /etc/bumblebee/bumblebee.conf</code>
                                 <li>Edit the line in the <span class="in-mono">[bumblebeed]</span> section that looks like <span class="in-mono">Driver=</span> and change it to:</li>
@@ -161,7 +167,16 @@
                                 <code>Bridge=primus</code>
                                 <li>Change every occurence of the word <span class="in-mono">nvidia-current</span> in this file to the Nvidia driver you selected. In my case, it's <span class="in-mono">nvidia-367</span>.</li>
                                 <p class="note note-info">If you're using <span class="in-mono">vi</span> or <span class="in-mono">vim</span>, you can just type <span class="in-mono">:%s/nvidia-current/nvidia-367/g</span> and hit enter to change all occurences of <span class="in-mono">nvidia-current</span> with <span class="in-mono">nvidia-367</span>.</p>
+                                <li>Edit the line in the <span class="in-mono">[driver-nvidia]</span> section to say:</li>
+                                <code>PMMethod=bbswitch</code>
                                 <li>Save your changes and close the file.</li>
+                                <li>Open <span class="in-mono">/etc/modprobe.d/bumblebee.conf</span> in your favorite text editor.</li>
+                                <li>Append blacklist entries to match the Nvidia driver you installed to the bottom of this file.</li>
+                                <code>
+                                        blacklist nvidia-367 <br />
+                                        blacklist nvidia-367-updates <br />
+                                        blacklist nvidia-experimental-367
+                                </code>
                                 <li>Reboot</li>
                                 <li>Verify you can use Bumblebee.</li>
                                 <code>optirun glxinfo | egrep -i 'nvidia|gtx'</code>
@@ -175,6 +190,12 @@
                                         OpenGL core profile shading language version string: 4.50 NVIDIA <br />
                                         OpenGL version string: 4.5.0 NVIDIA 367.57 <br />
                                         OpenGL shading language version string: 4.50 NVIDIA <br />
+                                </code>
+                                <li>Verify that the discrete card is now off since we aren't actively running a program with <span class="in-mono">optirun</span>.</li>
+                                <code>cat /proc/acpi/bbswitch</code>
+                                <p>We should get an output like:</p>
+                                <code>
+                                0000:02:00.0 OFF
                                 </code>
                                 <li><strong>OPTIONAL</strong> Download and install the <a href="https://sourceforge.net/projects/virtualgl/files/2.5.1/virtualgl_2.5.1_amd64.deb/download">VirtualGL tools</a> to benchmark your system and make sure <span class="in-mono">optirun</span> uses the correct video card. I like using <span class="in-mono">glxspheres64</span></li>
                         </ol>
@@ -228,7 +249,10 @@
                         <h2><a name="toc-issues">Known Issues</a></h2>
                         <p><strong>The Brightness Function keys don't work</strong></p>
                         <p>I suspect this has something to do with some weird quirk of the ACPI controls after installing the Nvidia driver. The workaround is described in <a href="#toc-nvidiadriver">the Nvidia driver setup section</a> where we modify Grub's boot parameters. This does not regain use of the function keys, but it does allow for controlling the brightness via settings, brightness applet, or some other brightness controller application.</p>
-                        <hr />
+                        <p><strong>Bumblebee service status says it failed to load module "mouse"</strong></p>
+                        <p>
+                        Not entirely sure what this means, but it hasn't really interfered with anything.
+                        </p>
                 </div> <!-- main-content -->
         </body>
 </html>
