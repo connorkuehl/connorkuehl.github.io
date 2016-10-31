@@ -163,8 +163,6 @@
                                 <code>sudo vim /etc/bumblebee/bumblebee.conf</code>
                                 <li>Edit the line in the <span class="in-mono">[bumblebeed]</span> section that looks like <span class="in-mono">Driver=</span> and change it to:</li>
                                 <code>Driver=nvidia</code>
-                                <li>Edit the line in the <span class="in-mono">[optirun]</span> section that looks like <span class="in-mono">Bridge=auto</span> and change it to:</li>
-                                <code>Bridge=primus</code>
                                 <li>Change every occurence of the word <span class="in-mono">nvidia-current</span> in this file to the Nvidia driver you selected. In my case, it's <span class="in-mono">nvidia-367</span>.</li>
                                 <p class="note note-info">If you're using <span class="in-mono">vi</span> or <span class="in-mono">vim</span>, you can just type <span class="in-mono">:%s/nvidia-current/nvidia-367/g</span> and hit enter to change all occurences of <span class="in-mono">nvidia-current</span> with <span class="in-mono">nvidia-367</span>.</p>
                                 <li>Edit the line in the <span class="in-mono">[driver-nvidia]</span> section to say:</li>
