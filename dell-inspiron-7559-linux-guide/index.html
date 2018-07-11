@@ -66,10 +66,10 @@
                 <p>This guide will show you how to install and configure an
                         <strong>Ubuntu Linux 16.04/18.04 LTS</strong> distribution (Ubuntu, Lubuntu, Xubuntu, Kubuntu, Ubuntu Gnome, Ubuntu
                         MATE) on the Dell Inspiron 7559 laptop.</p>
-                <p class="note note-warn">Donot try to upgrade from 
+                <p class="note note-warn">Do not try to upgrade from 
                         <b>Ubuntu 16.04 LTS</b> to <b>18.04 LTS now</b>. This might crash your OS (Crashed mine! Had to do a fresh install of
                         Ubuntu 18.04 LTS.). Upgrade from 16.04 LTS to 18.04 LTS will be enabled 
-                <a href="https://wiki.ubuntu.com/BionicBeaver/ReleaseNotes">late july</a>.
+                <a href="https://wiki.ubuntu.com/BionicBeaver/ReleaseNotes#Upgrading_from_Ubuntu_16.04_LTS">late july</a>.
                 </p>
                 <p class="note note-warn">
                         <strong>DISCLAIMER</strong> This document just details the processes that I discovered through hours of trial
@@ -121,7 +121,7 @@
                 </h2>
                 <p>While it might seem straightforward, I just want to make sure this document's structure is absolutely clear.</p>
                 <p class="note note-18">Text within blue boxes indicates instructions intended only for 
-                        <b>Ubuntu Linux 18.04 LTS</b>. The sections that were tested with 
+                        <b>Ubuntu Linux 18.04 LTS</b>. The sections that were <b>not</b> tested with 
                         <b>Ubuntu Linux 18.04 LTS</b> will be explicitly stated.
                 </p>
                 <p class="note note-info">Text within green boxes usually contains clarifying information and could be helpful if you're curious as
@@ -146,7 +146,6 @@
                 <h2>
                         <a name="toc-installation">Installation</a>
                 </h2>
-                <p class="note note-18">Follow the below steps for <b>18.04 LTS</b> installation as well.</p>
                 <ol>
                         <li>Make sure Secure Boot is disabled from the BIOS.</li>
                         <li>If you intend to dual boot with Windows, make sure Window's Fast Boot is disabled.</li>
@@ -168,7 +167,6 @@
                 <h2>
                         <a name="toc-initialsetup">Initial Setup</a>
                 </h2>
-                <p class="note note-18">Follow the below steps for <b>18.04 LTS</b> installation as well.</p>
                 <ol>
                         <li>Follow
                                 <a href="#toc-installation">Installation steps 4-6</a> to boot into the operating system.</li>
@@ -203,7 +201,7 @@
                         <li>Change the line that reads
                                 <span class="in-mono">GRUB_CMDLINE_LINUX=""</span> to</li>
                         <code>GRUB_CMDLINE_LINUX="acpi_backlight=native acpi_osi="</code>
-                        <p class="note note-18">In case of 18.04 LTS, use the below line instead of the above to adjust screen brightness using keyboard buttons.
+                        <p class="note note-18">In case of 18.04 LTS, use the below line instead of the above to adjust screen brightness using brightness function keys.
                                         <code>GRUB_CMDLINE_LINUX="acpi_backlight=vendor acpi_osi="</code>        
                         </p>
                         <p class="note note-warn">
@@ -224,7 +222,7 @@
                 <h2>
                         <a name="toc-updatekernel">Update to Linux kernel 4.8.5 for better GTX 900 & Optimus support</a>
                 </h2>
-                <p class="note note-18"><b>Didnot</b> test this section with <b>18.04 LTS</b> installation.</p>
+                <p class="note note-18"><b>Did not</b> test this section with <b>18.04 LTS</b> installation.</p>
                 <ol>
                         <li>Make a directory to download the kernel files to, make sure it's empty then
                                 <span class="in-mono">cd</span> into it.</li>
@@ -250,7 +248,7 @@
                 <h2>
                         <a name="toc-bumblebee">Installing Bumblebee</a>
                 </h2>
-                <p class="note note-18"><b>Didnot</b> test this section with <b>18.04 LTS</b> installation.</p>
+                <p class="note note-18"><b>Did not</b> test this section with <b>18.04 LTS</b> installation.</p>
                 <p>Bumblebee is a program that allows "on-the-fly" GPU switching similar to what Nvidia Optimus does on Windows.
                         Unfortunately, Nvidia doesn't exactly support this on Linux. Without Bumblebee, we can only switch
                         GPUs and then log out/back in to change it. This results in us using the power-hungry Nvidia GPU
@@ -332,7 +330,6 @@
                 <h2>
                         <a name="toc-powermanagement">Installing Power-Management Utilities</a>
                 </h2>
-                <p class="note note-18">Follow the below steps for <b>18.04 LTS</b> installation as well.</p>
                 <p>Battery life isn't too bad when your brightness is a bit lower. I usually install TLP to squeeze some more
                         time out of my Linux battery life. After you install it and verify that it's running, it's pretty
                         hands-off from there and it'll take care of itself from then on.</p>
@@ -349,7 +346,7 @@
                 <h2>
                         <a name="toc-gpuswitching">Running games and applications with the proper GPU</a>
                 </h2>
-                <p class="note note-18"><b>Didnot</b> test this section with <b>18.04 LTS</b> installation.</p>
+                <p class="note note-18"><b>Did not</b> test this section with <b>18.04 LTS</b> installation.</p>
                 <p>
                         <strong>Running Steam games</strong>
                 </p>
@@ -382,7 +379,7 @@
                 <h2>
                         <a name="toc-inteldriver">(Optional) Installing the Intel Graphics Driver and Firmware</a>
                 </h2>
-                <p class="note note-18"><b>Didnot</b> test this section with <b>18.04 LTS</b> installation.</p>
+                <p class="note note-18"><b>Did not</b> test this section with <b>18.04 LTS</b> installation.</p>
                 <p>This step is optional just because I followed it to quiet down some "warnings" given saying that some i915
                         firmware is missing or whatever. It only fixes one or two of the warnings but the other one remains
                         even after installing it. I haven't investigated this too much to see if there's an actual benefit,
